@@ -236,7 +236,7 @@
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
-					<goals>gae:deploy -f ybo-tv-server/pom.xml</goals>
+					<goals>gae:deploy</goals>
 				</configuration>
 			</plugin>
 
@@ -330,9 +330,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git://github.com/ybonnel/YboTv.git</connection>
-        <developerConnection>scm:git:git@github.com:ybonnel/YboTv.git</developerConnection>
-        <url>https://github.com/ybonnel/YboTv</url>
+        <connection>scm:git://github.com/ybonnel/ybo-tv-server.git</connection>
+        <developerConnection>scm:git:git@github.com:ybonnel/ybo-tv-server.git</developerConnection>
+        <url>https://github.com/ybonnel/ybo-tv-server</url>
     </scm>
 
 </project>
