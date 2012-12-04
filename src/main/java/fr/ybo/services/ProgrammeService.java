@@ -22,50 +22,22 @@ public class ProgrammeService extends DataService<ProgrammeForMemCache> {
     @SuppressWarnings("unchecked")
     @Override
     public List<ProgrammeForMemCache> getAll() throws ServiceExeption {
-        try {
-            return GetTv.getCurrentTv().getProgramme();
-        } catch (JAXBException jaxbException) {
-            throw new ServiceExeption(jaxbException);
-        } catch (IOException ioException) {
-            throw new ServiceExeption(ioException);
-
-        }
+        throw new RuntimeException("Programme.getAll is not accessible");
     }
 
     @Override
     public ProgrammeForMemCache getById(String id) throws ServiceExeption {
-        String idMemCache = "programme_" + id;
-        MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-        ProgrammeForMemCache programme = (ProgrammeForMemCache) service.get(idMemCache);
-        if (programme == null) {
-            for (ProgrammeForMemCache oneProgramme : getAll()) {
-                if (id.equals(oneProgramme.getId())) {
-                    programme = oneProgramme;
-                    break;
-                }
-            }
-            if (programme != null) {
-                service.put(idMemCache, programme, Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
-            }
-        }
-        return programme;
+        throw new RuntimeException("Programme.getId is not accessible");
     }
 
     private List<ProgrammeForMemCache> getByChannel(String channel) throws ServiceExeption {
-        String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        String memCacheId = currentDate + "_programmes_" + channel;
-        MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-        List<ProgrammeForMemCache> programmes = (List<ProgrammeForMemCache>) service.get(memCacheId);
-        if (programmes == null) {
-            programmes = new ArrayList<ProgrammeForMemCache>();
-            for (ProgrammeForMemCache programme : getAll()) {
-                if (channel.equals(programme.getChannel())) {
-                    programmes.add(programme);
-                }
-            }
-            service.put(memCacheId, programmes, Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+        try {
+            return GetTv.getCurrentProgrammes(channel);
+        } catch (JAXBException e) {
+            throw new ServiceExeption(e);
+        } catch (IOException e) {
+            throw new ServiceExeption(e);
         }
-        return programmes;
     }
 
     @Override

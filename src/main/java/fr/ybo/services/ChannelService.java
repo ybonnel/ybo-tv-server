@@ -20,12 +20,7 @@ public class ChannelService extends DataService<ChannelForMemCache> {
     @Override
     public List<ChannelForMemCache> getAll() throws ServiceExeption {
         try {
-            MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-            List<ChannelForMemCache> channels = (List<ChannelForMemCache>) service.get("channels");
-            if (channels == null) {
-                channels = GetTv.getCurrentTv().getChannel();
-                service.put("channels", channels);
-            }
+            List<ChannelForMemCache> channels = GetTv.getCurrentChannels();
             Collections.sort(channels);
             return channels;
         } catch (JAXBException jaxbException) {

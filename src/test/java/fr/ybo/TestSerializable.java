@@ -5,6 +5,7 @@ import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 import fr.ybo.modele.TvForMemCache;
 import fr.ybo.xmltv.Tv;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mortbay.io.WriterOutputStream;
 
@@ -15,8 +16,10 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
+
 public class TestSerializable {
 
+    @Ignore
     @Test
     public void testSerializable() throws JAXBException, IOException {
         JAXBContext jc = JAXBContext.newInstance("fr.ybo.xmltv");

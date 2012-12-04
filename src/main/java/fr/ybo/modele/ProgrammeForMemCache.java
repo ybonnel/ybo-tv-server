@@ -160,7 +160,7 @@ public class ProgrammeForMemCache implements Serializable {
     public static ProgrammeForMemCache fromProgramme(Programme programme) {
         ProgrammeForMemCache programmeForMemCache = new ProgrammeForMemCache();
         programmeForMemCache.setCategories(new ArrayList<String>(programme.getCategories()));
-        programmeForMemCache.setChannel(ChannelForMemCache.transformId(programme.getChannel()));
+        programmeForMemCache.setChannel(programme.getChannel());
         programmeForMemCache.setDate(programme.getDate());
         programmeForMemCache.setDesc(programme.getOneDesc());
         programmeForMemCache.setEpisodeNum(programme.getOneEpisodeNum());

@@ -19,7 +19,7 @@ public class UpdateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("UpdateServlet - begin");
         try {
-            GetTv.getCurrentTv();
+            GetTv.getCurrentChannels();
         } catch (JAXBException e) {
             Throwables.propagate(e);
         }

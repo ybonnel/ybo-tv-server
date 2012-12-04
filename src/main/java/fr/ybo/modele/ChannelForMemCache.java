@@ -210,12 +210,8 @@ public class ChannelForMemCache implements Serializable, Comparable<ChannelForMe
     public static ChannelForMemCache fromChannel(Channel channel) {
         ChannelForMemCache channelForMemCache = new ChannelForMemCache();
         channelForMemCache.setDisplayName(channel.getOneDisplayName());
-        channelForMemCache.setId(transformId(channel.getId()));
+        channelForMemCache.setId(channel.getId());
         return channelForMemCache;
-    }
-
-    public static String transformId(String oldId) {
-        return oldId.split("\\.")[0].substring(1);
     }
 
     private transient ProgrammeForMemCache currentProgramme;
