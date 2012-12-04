@@ -42,7 +42,7 @@ public class TestSerializable {
             @Override
             public InputStream getInput() throws IOException {
                 if (stream == null) {
-                    InputStream inputStream = TestSerializable.class.getResourceAsStream("/tnt_lite.zip");
+                    InputStream inputStream = TestSerializable.class.getResourceAsStream("/complet.zip");
                     stream = new ZipInputStream(inputStream);
                     stream.getNextEntry();
                 }

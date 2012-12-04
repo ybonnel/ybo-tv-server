@@ -57,3 +57,9 @@ mod.run(function($http, onStartInterceptor) {
 mod.controller('LoadingCtrl', function($scope, loadingService) {
     $scope.$watch(function() { return loadingService.isLoading(); }, function(value) { $scope.loading = value; });
 });
+
+function hideImg(idImg, idMediaBody, classToRemove, classToAdd) {
+    $(idImg).hide();
+    $(idMediaBody).removeClass(classToRemove);
+    $(idMediaBody).addClass(classToAdd);
+}

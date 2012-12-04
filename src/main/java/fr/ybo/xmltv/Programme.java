@@ -12,6 +12,7 @@ import com.google.common.collect.Maps;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -57,7 +58,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class Programme implements Serializable {
     @JsonProperty("id")
     public String getId() {
-        return start + channel;
+        return getStart() + channel;
     }
 
     @XmlAttribute(required = true)
@@ -128,87 +129,68 @@ public class Programme implements Serializable {
 
     @JsonProperty("title")
     public String getOneTitle() {
-        return Optional.fromNullable(Iterables.getFirst(getTitle(), null)).transform(new Function<Title, String>() {
-            @Override
-            public String apply(Title input) {
-                return input.getvalue();
-            }
-        }).orNull();
+        if (getTitle().isEmpty()) {
+            return null;
+        }
+        return getTitle().get(0).getvalue();
     }
 
     @JsonProperty("subTitle")
     public String getOneSubTitle() {
-        return Optional.fromNullable(Iterables.getFirst(getSubTitle(), null)).transform(new Function<SubTitle, String>() {
-            @Override
-            public String apply(SubTitle input) {
-                return input.getvalue();
-            }
-        }).orNull();
+        if (getSubTitle().isEmpty()) {
+            return null;
+        }
+        return getSubTitle().get(0).getvalue();
     }
 
     @JsonProperty("desc")
     public String getOneDesc() {
-        return Optional.fromNullable(Iterables.getFirst(getDesc(), null)).transform(new Function<Desc, String>() {
-            @Override
-            public String apply(Desc input) {
-                return input.getvalue();
-            }
-        }).orNull();
+        if (getDesc().isEmpty()) {
+            return null;
+        }
+        return getDesc().get(0).getvalue();
     }
 
     @JsonProperty("categories")
     public List<String> getCategories() {
-        return Lists.transform(getCategory(), new Function<Category, String>() {
-            @Override
-            public String apply(Category input) {
-                return input.getvalue();
-            }
-        });
+        List<String> categories = new ArrayList<String>(getCategory().size());
+        for (Category oneCategory : getCategory()) {
+            categories.add(oneCategory.getvalue());
+        }
+        return categories;
     }
 
     @JsonProperty("ratings")
     public Map<String, String> getRatings() {
-        return Maps.transformValues(Maps.uniqueIndex(getRating(), new Function<Rating, String>() {
-            @Override
-            public String apply(Rating input) {
-                return input.getSystem();
-            }
-        }), new Function<Rating, String>() {
-            @Override
-            public String apply(Rating input) {
-                return input.getValue();
-            }
-        });
+        Map<String, String> ratings = new HashMap<String, String>(getRating().size());
+        for (Rating oneRating : getRating()) {
+            ratings.put(oneRating.getSystem(), oneRating.getValue());
+        }
+        return ratings;
     }
 
     @JsonProperty("episodeNum")
     public String getOneEpisodeNum() {
-        return Optional.fromNullable(Iterables.getFirst(getEpisodeNum(), null)).transform(new Function<EpisodeNum, String>() {
-            @Override
-            public String apply(EpisodeNum input) {
-                return input.getvalue();
-            }
-        }).orNull();
+        if (getEpisodeNum().isEmpty()) {
+            return null;
+        }
+        return getEpisodeNum().get(0).getvalue();
     }
 
     @JsonProperty("starRating")
     public String getOneStarRating() {
-        return Optional.fromNullable(Iterables.getFirst(getStarRating(), null)).transform(new Function<StarRating, String>() {
-            @Override
-            public String apply(StarRating input) {
-                return input.getValue();
-            }
-        }).orNull();
+        if (getStarRating().isEmpty()) {
+            return null;
+        }
+        return getStarRating().get(0).getValue();
     }
 
     @JsonProperty("icon")
     public String getOneIcon() {
-        return Optional.fromNullable(Iterables.getFirst(getIcon(), null)).transform(new Function<Icon, String>() {
-            @Override
-            public String apply(Icon input) {
-                return input.getSrc();
-            }
-        }).orNull();
+        if (getIcon().isEmpty()) {
+            return null;
+        }
+        return getIcon().get(0).getSrc();
     }
 
     /**
@@ -220,6 +202,9 @@ public class Programme implements Serializable {
      *     
      */
     public String getStart() {
+        if (start.contains(" ")) {
+            start = start.split(" ")[0];
+        }
         return start;
     }
 
@@ -244,6 +229,9 @@ public class Programme implements Serializable {
      *     
      */
     public String getStop() {
+        if (stop.contains(" ")) {
+            stop = stop.split(" ")[0];
+        }
         return stop;
     }
 

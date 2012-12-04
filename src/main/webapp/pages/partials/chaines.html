@@ -3,7 +3,7 @@
     <a class="pull-left span2">
         <img class="media-object" ng-src="/logos/{{channel.icon}}" title="{{channel.displayName}}" />
     </a>
-    <div class="media-body {{{true:'span5', false:'span7'}[channel.currentProgramme.icon != undefined]}}">
+    <div id="mediaBody{{channel.id}}" class="media-body {{{true:'span5', false:'span7'}[channel.currentProgramme.icon != undefined]}}">
         <h4 class="media-heading">{{channel.currentProgramme.title}}</h4>
         <h6 class="media-heading">{{channel.currentProgramme.start.substring(8,10)}}:{{channel.currentProgramme.start.substring(10,12)}} -
             {{channel.currentProgramme.stop.substring(8,10)}}:{{channel.currentProgramme.stop.substring(10,12)}}
@@ -16,7 +16,7 @@
         </div>
     </div>
     <a class="pull-right span2 {{{true:'', false:'hidden'}[channel.currentProgramme.icon != undefined]}}">
-    <img class="media-object" ng-src="{{channel.currentProgramme.icon}}"/>
-        </a>
+        <img id="img{{channel.id}}" class="media-object" ng-src="{{channel.currentProgramme.icon}}" onerror="hideImg('#img{{channel.id}}', '#mediaBody{{channel.id}}', 'span5', 'span7')"/>
+    </a>
 </div>
     </div>

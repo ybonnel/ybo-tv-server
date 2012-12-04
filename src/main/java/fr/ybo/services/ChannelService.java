@@ -26,6 +26,7 @@ public class ChannelService extends DataService<ChannelForMemCache> {
                 channels = GetTv.getCurrentTv().getChannel();
                 service.put("channels", channels);
             }
+            Collections.sort(channels);
             return channels;
         } catch (JAXBException jaxbException) {
             throw new ServiceExeption(jaxbException);
@@ -65,9 +66,10 @@ public class ChannelService extends DataService<ChannelForMemCache> {
                 List<ProgrammeForMemCache> programmes = ((ProgrammeService) ServiceFactory.getService("programme")).get("channel", channel.getId(), "date", parameterValue);
                 if (!programmes.isEmpty()) {
                     channel.setCurrentProgramme(programmes.get(0));
+                    returnChannels.add(channel);
                 }
-                returnChannels.add(channel);
             }
+            Collections.sort(returnChannels);
             return returnChannels;
         }
         return null;

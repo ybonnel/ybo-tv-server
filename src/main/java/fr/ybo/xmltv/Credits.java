@@ -3,16 +3,14 @@ package fr.ybo.xmltv;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -39,12 +37,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("directors")
     public List<String> getDirectors() {
-        return Lists.transform(getDirector(), new Function<Director, String>() {
-            @Override
-            public String apply(Director input) {
-                return input.getvalue();
-            }
-        });
+        List<String> directors = new ArrayList<String>(getDirector().size());
+        for (Director oneDirector : getDirector()) {
+            directors.add(oneDirector.getvalue());
+        }
+        return directors;
     }
 
 
@@ -53,12 +50,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("actors")
     public List<String> getActors() {
-        return Lists.transform(getActor(), new Function<Actor, String>() {
-            @Override
-            public String apply(Actor input) {
-                return input.getvalue();
-            }
-        });
+        List<String> actors = new ArrayList<String>(getActor().size());
+        for (Actor oneActor : getActor()) {
+            actors.add(oneActor.getvalue());
+        }
+        return actors;
     }
 
     @JsonIgnore
@@ -66,12 +62,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("writers")
     public List<String> getWriters() {
-        return Lists.transform(getWriter(), new Function<Writer, String>() {
-            @Override
-            public String apply(Writer input) {
-                return input.getvalue();
-            }
-        });
+        List<String> writers = new ArrayList<String>(getWriter().size());
+        for (Writer oneWriter : getWriter()) {
+            writers.add(oneWriter.getvalue());
+        }
+        return writers;
     }
 
     @JsonIgnore
@@ -79,12 +74,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("adapters")
     public List<String> getAdapters() {
-        return Lists.transform(getAdapter(), new Function<Adapter, String>() {
-            @Override
-            public String apply(Adapter input) {
-                return input.getvalue();
-            }
-        });
+        List<String> adapters = new ArrayList<String>(getAdapter().size());
+        for (Adapter oneAdapter : getAdapter()) {
+            adapters.add(oneAdapter.getvalue());
+        }
+        return adapters;
     }
 
     @JsonIgnore
@@ -92,12 +86,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("producers")
     public List<String> getProducers() {
-        return Lists.transform(getProducer(), new Function<Producer, String>() {
-            @Override
-            public String apply(Producer input) {
-                return input.getvalue();
-            }
-        });
+        List<String> producers = new ArrayList<String>(getProducer().size());
+        for (Producer oneProducer : getProducer()) {
+            producers.add(oneProducer.getvalue());
+        }
+        return producers;
     }
 
     @JsonIgnore
@@ -105,12 +98,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("composers")
     public List<String> getComposers() {
-        return Lists.transform(getComposer(), new Function<Composer, String>() {
-            @Override
-            public String apply(Composer input) {
-                return input.getvalue();
-            }
-        });
+        List<String> composers = new ArrayList<String>(getComposer().size());
+        for (Composer oneComposer : getComposer()) {
+            composers.add(oneComposer.getvalue());
+        }
+        return composers;
     }
 
     @JsonIgnore
@@ -118,12 +110,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("editors")
     public List<String> getEditors() {
-        return Lists.transform(getEditor(), new Function<Editor, String>() {
-            @Override
-            public String apply(Editor input) {
-                return input.getvalue();
-            }
-        });
+        List<String> editors = new ArrayList<String>(getEditor().size());
+        for (Editor oneEditor : getEditor()) {
+            editors.add(oneEditor.getvalue());
+        }
+        return editors;
     }
 
     @JsonIgnore
@@ -131,12 +122,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("presenters")
     public List<String> getPresenters() {
-        return Lists.transform(getPresenter(), new Function<Presenter, String>() {
-            @Override
-            public String apply(Presenter input) {
-                return input.getvalue();
-            }
-        });
+        List<String> presenters = new ArrayList<String>(getPresenter().size());
+        for (Presenter onePresenter : getPresenter()) {
+            presenters.add(onePresenter.getvalue());
+        }
+        return presenters;
     }
 
     @JsonIgnore
@@ -144,12 +134,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("commentators")
     public List<String> getCommentators() {
-        return Lists.transform(getCommentator(), new Function<Commentator, String>() {
-            @Override
-            public String apply(Commentator input) {
-                return input.getvalue();
-            }
-        });
+        List<String> commentators = new ArrayList<String>(getCommentator().size());
+        for (Commentator oneCommentator : getCommentator()) {
+            commentators.add(oneCommentator.getvalue());
+        }
+        return commentators;
     }
 
     @JsonIgnore
@@ -157,12 +146,11 @@ public class Credits implements Serializable {
 
     @JsonProperty("guests")
     public List<String> getGuests() {
-        return Lists.transform(getGuest(), new Function<Guest, String>() {
-            @Override
-            public String apply(Guest input) {
-                return input.getvalue();
-            }
-        });
+        List<String> guests = new ArrayList<String>(getGuest().size());
+        for (Guest oneGuest : getGuest()) {
+            guests.add(oneGuest.getvalue());
+        }
+        return guests;
     }
 
 

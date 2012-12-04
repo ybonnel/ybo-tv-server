@@ -31,9 +31,9 @@ public class TvForMemCache implements Serializable {
     public static TvForMemCache fromTv(Tv tv) {
         TvForMemCache tvForMemCache = new TvForMemCache();
 
-        tvForMemCache.channel = Lists.transform(tv.getChannel(), new TransformChannels());
+        tvForMemCache.channel = new ArrayList<ChannelForMemCache>(Lists.transform(tv.getChannel(), new TransformChannels()));
 
-        tvForMemCache.programme = Lists.transform(tv.getProgramme(), new TransformProgrammes());
+        tvForMemCache.programme = new ArrayList<ProgrammeForMemCache>(Lists.transform(tv.getProgramme(), new TransformProgrammes()));
         return tvForMemCache;
     }
 

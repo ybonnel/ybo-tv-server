@@ -53,7 +53,7 @@ public class ProgrammeService extends DataService<ProgrammeForMemCache> {
 
     private List<ProgrammeForMemCache> getByChannel(String channel) throws ServiceExeption {
         String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        String memCacheId = "programmeByChannel_" + channel + "_" + currentDate;
+        String memCacheId = currentDate + "_programmes_" + channel;
         MemcacheService service = MemcacheServiceFactory.getMemcacheService();
         List<ProgrammeForMemCache> programmes = (List<ProgrammeForMemCache>) service.get(memCacheId);
         if (programmes == null) {
@@ -80,13 +80,13 @@ public class ProgrammeService extends DataService<ProgrammeForMemCache> {
 
     private Collection<ProgrammeForMemCache> getByChannelAndDate(String channel, final String date) throws ServiceExeption {
         return Collections2.filter(getByChannel(channel), new Predicate<ProgrammeForMemCache>() {
-            @Override
-            public boolean apply(ProgrammeForMemCache programme) {
-                return programme.getStart().compareTo(date) <= 0
-                        && programme.getStop().compareTo(date) >= 0;
-            }
-        });
-    }
+        @Override
+        public boolean apply(ProgrammeForMemCache programme) {
+            return programme.getStart().compareTo(date) <= 0
+                    && programme.getStop().compareTo(date) >= 0;
+        }
+    });
+}
     private List<ProgrammeForMemCache> getByChannelAndBetweenDate(String channel, final String dateDebut, final String dateFin) throws ServiceExeption {
         List<ProgrammeForMemCache> programmes = new ArrayList<ProgrammeForMemCache>(Collections2.filter(getByChannel(channel), new Predicate<ProgrammeForMemCache>() {
             @Override
