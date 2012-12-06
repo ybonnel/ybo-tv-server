@@ -183,9 +183,9 @@ public class GetTv {
 
 
             for (ChannelForMemCache channel : channels) {
-                logger.info("Récupération des programmes de la chaine " + channel.getDisplayName());
                 List<ProgrammeForMemCache> programmes = CacheService.getInstance().getProgrammes(currentDate, channel.getId());
                 if (programmes == null) {
+                    logger.info("Récupération des programmes de la chaine " + channel.getDisplayName());
                     TvForMemCache tvWithProgrammes = TvForMemCache.fromTv((Tv) um.unmarshal(GetZip.getFileProgrammeForOneChannel(channel.getId())));
                     programmes = tvWithProgrammes.getProgramme();
                     CacheService.getInstance().addProgrammes(currentDate, channel.getId(), programmes);

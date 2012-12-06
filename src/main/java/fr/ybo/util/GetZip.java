@@ -16,7 +16,7 @@ public class GetZip {
 
     private static Logger logger = LoggerFactory.getLogger(GetZip.class);
 
-    public final static String BASE_URL = "http://serveur.ybonnel.fr/local-xml/";
+    public final static String BASE_URL = "http://127.0.0.1/local-xml/";
 
     public static Reader getFileForChannels() throws IOException {
 
