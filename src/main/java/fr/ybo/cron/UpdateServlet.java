@@ -1,10 +1,9 @@
 package fr.ybo.cron;
 
 import com.google.common.base.Throwables;
-import fr.ybo.modele.TvForMemCache;
 import fr.ybo.util.GetTv;
-import org.apache.log4j.Logger;
-import sun.util.resources.CalendarData_ro;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class UpdateServlet extends HttpServlet {
 
-    private final static Logger logger = Logger.getLogger(UpdateServlet.class);
+    private final static Logger logger = LoggerFactory.getLogger(UpdateServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info("UpdateServlet - begin");

@@ -1,21 +1,13 @@
 package fr.ybo.services;
 
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import fr.ybo.modele.ProgrammeForMemCache;
 import fr.ybo.util.GetTv;
-import fr.ybo.xmltv.Channel;
-import fr.ybo.xmltv.Programme;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 public class ProgrammeService extends DataService<ProgrammeForMemCache> {
 

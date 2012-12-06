@@ -1,13 +1,12 @@
 package fr.ybo.util;
 
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import fr.ybo.modele.ChannelForMemCache;
 import fr.ybo.modele.ProgrammeForMemCache;
 import fr.ybo.modele.TvForMemCache;
+import fr.ybo.services.CacheService;
 import fr.ybo.xmltv.Tv;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -22,16 +21,16 @@ public class GetTv {
 
     private final static Object jeton = new Object();
 
-    private final static Logger logger = Logger.getLogger(GetTv.class);
+    private final static Logger logger = LoggerFactory.getLogger(GetTv.class);
 
     public static List<ChannelForMemCache> getCurrentChannels() throws JAXBException, IOException {
         String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
-        MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-        List<ChannelForMemCache> channels = (List<ChannelForMemCache>) service.get(currentDate + "_channels");
+
+        List<ChannelForMemCache> channels = CacheService.getInstance().getChannels(currentDate);
 
         if (channels == null) {
-            channels = GetTv.getTvFromNetworkAndReturnChannels(currentDate, service);
+            channels = GetTv.getTvFromNetworkAndReturnChannels(currentDate);
         }
 
         return channels;
@@ -40,12 +39,10 @@ public class GetTv {
     public static List<ProgrammeForMemCache> getCurrentProgrammes(String channelId) throws JAXBException, IOException {
         String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
-        MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-
-        List<ProgrammeForMemCache> programmes = (List<ProgrammeForMemCache>) service.get(currentDate + "_programmes_" + channelId);
+        List<ProgrammeForMemCache> programmes = CacheService.getInstance().getProgrammes(currentDate, channelId);
 
         if (programmes == null) {
-            programmes = GetTv.getTvFromNetworkAndReturnProgramme(currentDate, service, channelId);
+            programmes = GetTv.getTvFromNetworkAndReturnProgramme(currentDate, channelId);
         }
         return programmes;
     }
@@ -137,7 +134,7 @@ public class GetTv {
 
     }};
 
-    private static List<ChannelForMemCache> getTvFromNetworkAndReturnChannels(String currentDate, MemcacheService service) throws JAXBException, IOException {
+    private static List<ChannelForMemCache> getTvFromNetworkAndReturnChannels(String currentDate) throws JAXBException, IOException {
         TvForMemCache tv;
         synchronized (jeton) {
             JAXBContext jc = JAXBContext.newInstance("fr.ybo.xmltv");
@@ -152,12 +149,12 @@ public class GetTv {
                 }
             }
 
-            service.put(currentDate + "_channels", tv.getChannel(), Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+            CacheService.getInstance().addChannels(currentDate, tv.getChannel());
 
             for (ChannelForMemCache channel : tv.getChannel()) {
                 logger.info("Récupération des programmes de la chaine " + channel.getDisplayName());
                 TvForMemCache tvWithProgrammes = TvForMemCache.fromTv((Tv) um.unmarshal(GetZip.getFileProgrammeForOneChannel(channel.getId())));
-                service.put(currentDate + "_programmes_" + channel.getId(), tvWithProgrammes.getProgramme(), Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+                CacheService.getInstance().addProgrammes(currentDate, channel.getId(), tvWithProgrammes.getProgramme());
             }
         }
         return tv.getChannel();
@@ -169,9 +166,8 @@ public class GetTv {
 
             JAXBContext jc = JAXBContext.newInstance("fr.ybo.xmltv");
             Unmarshaller um = jc.createUnmarshaller();
-            MemcacheService service = MemcacheServiceFactory.getMemcacheService();
 
-            List<ChannelForMemCache> channels = (List<ChannelForMemCache>) service.get(currentDate + "_channels");
+            List<ChannelForMemCache> channels = CacheService.getInstance().getChannels(currentDate);
             if (channels == null) {
                 TvForMemCache tv = TvForMemCache.fromTv((Tv) um.unmarshal(GetZip.getFileForChannels()));
 
@@ -182,17 +178,17 @@ public class GetTv {
                     }
                 }
                 channels = tv.getChannel();
-                service.put(currentDate + "_channels", channels, Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+                CacheService.getInstance().addChannels(currentDate, channels);
             }
 
 
             for (ChannelForMemCache channel : channels) {
                 logger.info("Récupération des programmes de la chaine " + channel.getDisplayName());
-                List<ProgrammeForMemCache> programmes = (List<ProgrammeForMemCache>) service.get(currentDate + "_programmes_" + channel.getId());
+                List<ProgrammeForMemCache> programmes = CacheService.getInstance().getProgrammes(currentDate, channel.getId());
                 if (programmes == null) {
                     TvForMemCache tvWithProgrammes = TvForMemCache.fromTv((Tv) um.unmarshal(GetZip.getFileProgrammeForOneChannel(channel.getId())));
                     programmes = tvWithProgrammes.getProgramme();
-                    service.put(currentDate + "_programmes_" + channel.getId(), programmes, Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+                    CacheService.getInstance().addProgrammes(currentDate, channel.getId(), programmes);
                 }
                 long elapsedTime = System.currentTimeMillis() - startTime;
                 if (elapsedTime > TimeUnit.SECONDS.toMillis(40)) {
@@ -203,7 +199,7 @@ public class GetTv {
         }
     }
 
-    private static List<ProgrammeForMemCache> getTvFromNetworkAndReturnProgramme(String currentDate, MemcacheService service, String channelId) throws JAXBException, IOException {
+    private static List<ProgrammeForMemCache> getTvFromNetworkAndReturnProgramme(String currentDate, String channelId) throws JAXBException, IOException {
         TvForMemCache returnTv = null;
         synchronized (jeton) {
             JAXBContext jc = JAXBContext.newInstance("fr.ybo.xmltv");
@@ -218,7 +214,7 @@ public class GetTv {
                 }
             }
 
-            service.put(currentDate + "_channels", tv.getChannel(), Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+            CacheService.getInstance().addChannels(currentDate, tv.getChannel());
 
 
             for (ChannelForMemCache channel : tv.getChannel()) {
@@ -227,8 +223,11 @@ public class GetTv {
                 if (channel.getId().equals(channelId)) {
                     returnTv = tvWithProgrammes;
                 }
-                service.put(currentDate + "_programmes_" + channel.getId(), tvWithProgrammes.getProgramme(), Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
+                CacheService.getInstance().addProgrammes(currentDate, channel.getId(), tvWithProgrammes.getProgramme());
             }
+        }
+        if (returnTv == null) {
+            return null;
         }
         return returnTv.getProgramme();
     }

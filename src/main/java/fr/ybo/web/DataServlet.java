@@ -2,15 +2,14 @@ package fr.ybo.web;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.appengine.api.memcache.Expiration;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import fr.ybo.services.CacheService;
 import fr.ybo.services.DataService;
 import fr.ybo.services.ServiceExeption;
 import fr.ybo.services.ServiceFactory;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 public class DataServlet extends HttpServlet {
 
-    private static Logger logger = Logger.getLogger(HttpServlet.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpServlet.class);
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
@@ -48,10 +46,8 @@ public class DataServlet extends HttpServlet {
 
         try {
             String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-            String memCacheId = "jsonResponse/" + currentDate + req.getPathInfo();
-            MemcacheService cacheService = MemcacheServiceFactory.getMemcacheService();
 
-            String jsonResponse = (String) cacheService.get(memCacheId);
+            String jsonResponse = CacheService.getInstance().getJsonResponse(currentDate, req.getPathInfo());
 
             if (jsonResponse == null) {
                 Object result = ServiceFactory.callService(service, req.getMethod(), parameters);
@@ -59,16 +55,12 @@ public class DataServlet extends HttpServlet {
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
                 jsonResponse = mapper.writeValueAsString(result);
-                // On ne met en cache la réponse que si elle fait moins de 500Ko.
-                if (jsonResponse.length() < 500000) {
-                    cacheService.put(memCacheId, jsonResponse, Expiration.byDeltaMillis((int) TimeUnit.DAYS.toMillis(2)));
-                }
+                CacheService.getInstance().addJsonResponse(currentDate, req.getPathInfo(), jsonResponse);
             }
             resp.getWriter().print(jsonResponse);
         } catch (ServiceExeption serviceExeption) {
             resp.setStatus(500);
-            logger.info("ServiceException ", serviceExeption);
-            logger.error(serviceExeption);
+            logger.error("ServiceException ", serviceExeption);
             serviceExeption.printStackTrace(resp.getWriter());
         }
     }

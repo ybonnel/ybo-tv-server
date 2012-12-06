@@ -1,23 +1,22 @@
 package fr.ybo.util;
 
 
-import com.google.common.io.ByteStreams;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
-import fr.ybo.xmltv.Channel;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
 public class GetZip {
 
-    private static Logger logger = Logger.getLogger(GetZip.class);
+    private static Logger logger = LoggerFactory.getLogger(GetZip.class);
 
-    public final static String BASE_URL = "http://transports-rennes.ic-s.org/version/ybo-tv/xml/";
+    public final static String BASE_URL = "http://serveur.ybonnel.fr/local-xml/";
 
     public static Reader getFileForChannels() throws IOException {
 
@@ -28,7 +27,6 @@ public class GetZip {
         connection.setReadTimeout(0);
         connection.connect();
         InputStream inputStream = connection.getInputStream();
-        //InputStream inputStream = GetZip.class.getResourceAsStream("/complet.zip");
         ZipInputStream stream = new ZipInputStream(inputStream);
         stream.getNextEntry();
         return new InputStreamReader(stream, "utf-8");
@@ -41,7 +39,6 @@ public class GetZip {
         connection.setReadTimeout(0);
         connection.connect();
         InputStream inputStream = connection.getInputStream();
-        //InputStream inputStream = GetZip.class.getResourceAsStream("/complet.zip");
         ZipInputStream stream = new ZipInputStream(inputStream);
         stream.getNextEntry();
         return new InputStreamReader(stream, "utf-8");

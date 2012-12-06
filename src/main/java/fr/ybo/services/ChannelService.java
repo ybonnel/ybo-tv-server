@@ -1,12 +1,8 @@
 package fr.ybo.services;
 
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import fr.ybo.modele.ChannelForMemCache;
 import fr.ybo.modele.ProgrammeForMemCache;
 import fr.ybo.util.GetTv;
-import fr.ybo.xmltv.Channel;
-import fr.ybo.xmltv.Programme;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -33,18 +29,11 @@ public class ChannelService extends DataService<ChannelForMemCache> {
 
     @Override
     public ChannelForMemCache getById(String id) throws ServiceExeption {
-        String idMemCache = "channel_" + id;
-        MemcacheService service = MemcacheServiceFactory.getMemcacheService();
-        ChannelForMemCache channel = (ChannelForMemCache) service.get(idMemCache);
-        if (channel == null) {
-            for (ChannelForMemCache oneChannel : getAll()) {
-                if (id.equals(oneChannel.getId())) {
-                    channel = oneChannel;
-                    break;
-                }
-            }
-            if (channel != null) {
-                service.put(idMemCache, channel);
+        ChannelForMemCache channel = null;
+        for (ChannelForMemCache oneChannel : getAll()) {
+            if (id.equals(oneChannel.getId())) {
+                channel = oneChannel;
+                break;
             }
         }
         return channel;
