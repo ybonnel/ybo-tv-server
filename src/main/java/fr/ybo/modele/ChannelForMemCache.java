@@ -31,8 +31,8 @@ public class ChannelForMemCache implements Serializable, Comparable<ChannelForMe
         put("10", "tmc.png");
         put("11", "nt1.png");
         put("12", "nrj12.png");
-        put("13", "lachaineparlementaire.png");
-        put("14", "france4.png");
+        put("13", "france4.png");
+        put("14", "lachaineparlementaire.png");
         put("15", "bfmtv.png");
         put("16", "itele.png");
         put("17", "d17.png");
