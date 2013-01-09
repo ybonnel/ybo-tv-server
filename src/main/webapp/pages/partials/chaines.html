@@ -11,9 +11,7 @@
 
 
         <!-- Nested media object -->
-        <div class="media">
-            {{channel.currentProgramme.desc}}
-        </div>
+        <div class="media" ng-bind-html="channel.currentProgramme.desc"></div>
     </div>
     <a class="pull-right span2 {{{true:'', false:'hidden'}[channel.currentProgramme.icon != undefined]}}">
         <img id="img{{channel.id}}" class="media-object" ng-src="{{channel.currentProgramme.icon}}" onerror="hideImg('#img{{channel.id}}', '#mediaBody{{channel.id}}', 'span5', 'span7')"/>
