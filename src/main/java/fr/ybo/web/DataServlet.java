@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,6 +25,17 @@ public class DataServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+
+        String accept = req.getHeader("Accept");
+
+        if (accept == null) {
+            resp.setStatus(404);
+            PrintWriter writer = resp.getWriter();
+            writer.print("Accept header is missing");
+            writer.close();
+            return;
+        }
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
 
