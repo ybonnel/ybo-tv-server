@@ -30,6 +30,11 @@ public class ChannelForMemCache implements Serializable, Comparable<ChannelForMe
         return mapChaineLogo.get(id) + ".png";
     }
 
+    @JsonProperty("numero")
+    public int getNumero() {
+        return getNumero(id);
+    }
+
     private final static Map<String, String> mapChaineLogo = new HashMap<String, String>() {{
         put("13R1", "13erue");
         put("6TER", "6ter");
