@@ -2,7 +2,7 @@
 
 
 // Declare app level module which depends on filters, and services
-var App = angular.module('YboTv', ['YboTv.services', 'loading']);
+var App = angular.module('YboTv', ['YboTv.services', 'loading', 'ngSanitize']);
 
 
 // Configuration des routes
