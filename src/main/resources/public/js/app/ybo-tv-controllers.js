@@ -75,7 +75,7 @@ function FinSoireeController($scope, ChannelService, ProgrammeService, $log, $lo
     var tomorrow = new Date();
     tomorrow.setDate(today.getDate()+1);
     var now = sdf.format(tomorrow) + '010000';
-    if (today.getHours() > 2 ) {
+    if (today.getHours() < 2 ) {
         now = sdf.format(today) + '010000';
     }
 

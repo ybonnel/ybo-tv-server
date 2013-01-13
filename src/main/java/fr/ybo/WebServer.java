@@ -2,6 +2,7 @@ package fr.ybo;
 
 
 import fr.ybo.cron.UpdateServer;
+import fr.ybo.util.GetTv;
 import fr.ybo.web.DataServer;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -47,6 +48,11 @@ public class WebServer extends AbstractHandler {
         if (args.length == 1) {
             defaultPort = Integer.parseInt(args[0]);
         }
+
+        logger.info("Chargement du cache");
+        String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        GetTv.updateFromCron(currentDate);
+        logger.info("Fin de chargement du cache");
 
         Server server = new Server(defaultPort);
 
