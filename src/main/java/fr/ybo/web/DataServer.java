@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DataServlet extends HttpServlet {
+public class DataServer {
 
     private static Logger logger = LoggerFactory.getLogger(HttpServlet.class);
 
@@ -27,6 +27,8 @@ public class DataServlet extends HttpServlet {
             throws IOException {
 
         String accept = req.getHeader("Accept");
+
+        logger.debug("DataServer.goGet");
 
         if (accept == null) {
             resp.setStatus(404);
@@ -39,7 +41,7 @@ public class DataServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("utf-8");
 
-        Iterable<String> paths = Splitter.on('/').trimResults().omitEmptyStrings().split(req.getPathInfo());
+        Iterable<String> paths = Iterables.skip(Splitter.on('/').trimResults().omitEmptyStrings().split(req.getPathInfo()), 1);
 
         String nomService = Iterables.getFirst(paths, null);
 
@@ -69,7 +71,11 @@ public class DataServlet extends HttpServlet {
                 jsonResponse = mapper.writeValueAsString(result);
                 CacheService.getInstance().addJsonResponse(currentDate, req.getPathInfo(), jsonResponse);
             }
-            resp.getWriter().print(jsonResponse);
+            PrintWriter writer = resp.getWriter();
+            writer.print(jsonResponse);
+            writer.close();
+            resp.setStatus(200);
+            CacheService.getInstance().logCacheState();
         } catch (ServiceExeption serviceExeption) {
             resp.setStatus(500);
             logger.error("ServiceException ", serviceExeption);

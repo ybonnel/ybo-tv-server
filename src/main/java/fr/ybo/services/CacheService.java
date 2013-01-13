@@ -5,6 +5,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.Weigher;
 import fr.ybo.modele.ChannelForMemCache;
 import fr.ybo.modele.ProgrammeForMemCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +16,15 @@ public enum CacheService {
     INSTANCE;
 
     private boolean isCacheActive = true;
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheService.class);
+
+    public void logCacheState() {
+
+        logger.debug("CacheForChannels(size={})", getCacheForChannels().size());
+        logger.debug("CacheForProgrammes(size={})", getCacheForProgrammes().size());
+        logger.debug("CacheForJsonResponses(size={})", getCacheForJsonResponses().size());
+    }
 
     private CacheService() {
         String propertyCacheActive = System.getProperty("fr.ybo.ybotv.cache");
@@ -90,7 +101,7 @@ public enum CacheService {
         if (cacheForJsonResponses == null) {
             synchronized (INSTANCE) {
                 if (cacheForJsonResponses == null) {
-                    cacheForJsonResponses = CacheBuilder.newBuilder().maximumWeight(10000000).weigher(new Weigher<String, String>() {
+                    cacheForJsonResponses = CacheBuilder.newBuilder().maximumWeight(1000000).weigher(new Weigher<String, String>() {
                         @Override
                         public int weigh(String key, String value) {
                             return value.length();

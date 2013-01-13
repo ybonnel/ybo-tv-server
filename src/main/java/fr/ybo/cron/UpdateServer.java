@@ -6,22 +6,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class UpdateServlet extends HttpServlet {
+public class UpdateServer {
 
-    private final static Logger logger = LoggerFactory.getLogger(UpdateServlet.class);
+    private final static Logger logger = LoggerFactory.getLogger(UpdateServer.class);
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        logger.info("UpdateServlet - begin");
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        logger.info("UpdateServer - begin");
         try {
             long startTime = System.currentTimeMillis();
             String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
@@ -33,6 +33,10 @@ public class UpdateServlet extends HttpServlet {
                 currentDate = new SimpleDateFormat("yyyyMMdd").format(currentCalendar.getTime());
                 GetTv.updateFromCron(currentDate);
             }
+            response.setStatus(200);
+            PrintWriter writer = response.getWriter();
+            writer.print("OK");
+            writer.close();
         } catch (JAXBException e) {
             Throwables.propagate(e);
         }
