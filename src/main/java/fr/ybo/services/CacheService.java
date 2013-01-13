@@ -101,7 +101,7 @@ public enum CacheService {
         if (cacheForJsonResponses == null) {
             synchronized (INSTANCE) {
                 if (cacheForJsonResponses == null) {
-                    cacheForJsonResponses = CacheBuilder.newBuilder().maximumWeight(1000000).weigher(new Weigher<String, String>() {
+                    cacheForJsonResponses = CacheBuilder.newBuilder().maximumWeight(20000000).weigher(new Weigher<String, String>() {
                         @Override
                         public int weigh(String key, String value) {
                             return value.length();
