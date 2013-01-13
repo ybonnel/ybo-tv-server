@@ -8,8 +8,8 @@ then
 	mv ybo-tv-server.jar ybo-tv-server.jar.old
 	mv ybo-tv-server.jar.new ybo-tv-server.jar
 	./startServeur.sh
-	sleep 1
-	curl ybo-tv-v2.ybonnel.fr/cron/update
+	sleep 3
+	curl http://ybo-tv-v2.ybonnel.fr/cron/update
 	tail -10 serveur.log
 fi
 
