@@ -6,7 +6,7 @@
   <groupId>fr.ybo</groupId>
   <artifactId>ybo-tv-server</artifactId>
   <version>1.25-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
 
   <name>ybo-tv</name>
 
