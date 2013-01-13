@@ -79,7 +79,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.ybonnel.codestory.WebServer</mainClass>
+                            <mainClass>fr.ybo.WebServer</mainClass>
                         </manifest>
                     </archive>
                     <finalName>${project.artifactId}</finalName>
