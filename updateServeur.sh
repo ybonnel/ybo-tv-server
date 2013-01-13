@@ -8,7 +8,7 @@ then
 	mv ybo-tv-server.jar ybo-tv-server.jar.old
 	mv ybo-tv-server.jar.new ybo-tv-server.jar
 	./startServeur.sh
-	sleep 10
+	sleep 20
 	tail -10 serveur.log
 fi
 
