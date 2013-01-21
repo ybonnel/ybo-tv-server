@@ -73,6 +73,7 @@ public class ChannelForMemCache implements Serializable, Comparable<ChannelForMe
         put("DIS3", "disneychannel");
         put("DIS5", "disneycinemagic");
         put("EEN1", "eentertainment");
+        put("EUR3", "eurosport");
         put("EQU1", "equidia");
         put("ESC1", "escales");
         put("ESP1", "espnclassic");
