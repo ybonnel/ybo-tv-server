@@ -1,1 +1,1 @@
-java -Xmx200m -jar ybo-tv-server.jar >> serveur.log 2>&1 &
+java -Xmx512m -jar ybo-tv-server.jar >> serveur.log 2>&1 &
