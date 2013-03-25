@@ -1,6 +1,9 @@
 package fr.ybo;
 
 
+import fr.ybo.services.ChannelService;
+import fr.ybo.services.ServiceExeption;
+import fr.ybo.services.ServiceFactory;
 import fr.ybo.web.DataServer;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -16,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class WebServer extends AbstractHandler {
 
@@ -30,6 +34,20 @@ public class WebServer extends AbstractHandler {
 
         if (path.startsWith("/data/")) {
             dataServer.doGet(httpServletRequest, httpServletResponse);
+        } else if (path.equals("/status")) {
+            try {
+                ServiceFactory.getService("channel").getAll();
+                httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+                PrintWriter writer = httpServletResponse.getWriter();
+                writer.print("OK");
+                writer.close();
+            } catch (ServiceExeption serviceExeption) {
+                httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                PrintWriter writer = httpServletResponse.getWriter();
+                writer.println("KO");
+                serviceExeption.printStackTrace(writer);
+                writer.close();
+            }
         }
     }
 
