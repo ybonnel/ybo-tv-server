@@ -1,16 +1,13 @@
 package fr.ybo.modele;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import fr.ybo.xmltv.Programme;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProgrammeForMemCache implements Serializable {
+public class Programme implements Serializable {
 
+    private String id;
     private String start;
     private String stop;
     private String channel;
@@ -27,11 +24,6 @@ public class ProgrammeForMemCache implements Serializable {
     private List<String> actors;
     private List<String> writers;
     private List<String> presenters;
-
-    @JsonProperty("id")
-    public String getId() {
-        return start + channel;
-    }
 
     public String getStart() {
         return start;
@@ -157,26 +149,11 @@ public class ProgrammeForMemCache implements Serializable {
         return presenters;
     }
 
-    public static ProgrammeForMemCache fromProgramme(Programme programme) {
-        ProgrammeForMemCache programmeForMemCache = new ProgrammeForMemCache();
-        programmeForMemCache.setCategories(new ArrayList<String>(programme.getCategories()));
-        programmeForMemCache.setChannel(programme.getChannel());
-        programmeForMemCache.setDate(programme.getDate());
-        programmeForMemCache.setDesc(programme.getOneDesc());
-        programmeForMemCache.setEpisodeNum(programme.getOneEpisodeNum());
-        programmeForMemCache.setIcon(programme.getOneIcon());
-        programmeForMemCache.setRatings(new HashMap<String, String>(programme.getRatings()));
-        programmeForMemCache.setStarRating(programme.getOneStarRating());
-        programmeForMemCache.setStart(programme.getStart());
-        programmeForMemCache.setStop(programme.getStop());
-        programmeForMemCache.setSubTitle(programme.getOneSubTitle());
-        programmeForMemCache.setTitle(programme.getOneTitle());
-        if (programme.getCredits() != null) {
-            programmeForMemCache.getDirectors().addAll(programme.getCredits().getDirectors());
-            programmeForMemCache.getActors().addAll(programme.getCredits().getActors());
-            programmeForMemCache.getWriters().addAll(programme.getCredits().getWriters());
-            programmeForMemCache.getPresenters().addAll(programme.getCredits().getPresenters());
-        }
-        return programmeForMemCache;
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -1,8 +1,6 @@
 package fr.ybo;
 
 
-import fr.ybo.cron.UpdateServer;
-import fr.ybo.util.GetTv;
 import fr.ybo.web.DataServer;
 import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.Server;
@@ -18,13 +16,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class WebServer extends AbstractHandler {
 
     private DataServer dataServer = new DataServer();
-    private UpdateServer updateServer = new UpdateServer();
 
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
 
@@ -35,24 +30,15 @@ public class WebServer extends AbstractHandler {
 
         if (path.startsWith("/data/")) {
             dataServer.doGet(httpServletRequest, httpServletResponse);
-
-        } else if (path.startsWith("/cron/update")) {
-            updateServer.doGet(httpServletRequest, httpServletResponse);
         }
     }
 
     public static void main(String[] args) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
-        System.err.println(sdf.format(new Date()) + ":ybo-tv-server starting");
+        logger.info("ybo-tv-server starting");
         int defaultPort = 9080;
         if (args.length == 1) {
             defaultPort = Integer.parseInt(args[0]);
         }
-
-        logger.info("Chargement du cache");
-        String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        GetTv.updateFromCron(currentDate);
-        logger.info("Fin de chargement du cache");
 
         Server server = new Server(defaultPort);
 
@@ -70,6 +56,6 @@ public class WebServer extends AbstractHandler {
         server.start();
         server.join();
 
-        System.err.println(sdf.format(new Date()) + ":ybo-tv-server stopped");
+        logger.info(":ybo-tv-server stopped");
     }
 }

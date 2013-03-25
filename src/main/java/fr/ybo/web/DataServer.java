@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
-import fr.ybo.services.CacheService;
 import fr.ybo.services.DataService;
 import fr.ybo.services.ServiceExeption;
 import fr.ybo.services.ServiceFactory;
@@ -59,23 +58,16 @@ public class DataServer {
         String[] parameters = Iterables.toArray(Iterables.skip(paths, 1), String.class);
 
         try {
-            String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 
-            String jsonResponse = CacheService.getInstance().getJsonResponse(currentDate, req.getPathInfo());
+            Object result = ServiceFactory.callService(service, req.getMethod(), parameters);
 
-            if (jsonResponse == null) {
-                Object result = ServiceFactory.callService(service, req.getMethod(), parameters);
-
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-                jsonResponse = mapper.writeValueAsString(result);
-                CacheService.getInstance().addJsonResponse(currentDate, req.getPathInfo(), jsonResponse);
-            }
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+            String jsonResponse = mapper.writeValueAsString(result);
             PrintWriter writer = resp.getWriter();
             writer.print(jsonResponse);
             writer.close();
             resp.setStatus(200);
-            CacheService.getInstance().logCacheState();
         } catch (ServiceExeption serviceExeption) {
             resp.setStatus(500);
             logger.error("ServiceException ", serviceExeption);

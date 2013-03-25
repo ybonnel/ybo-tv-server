@@ -1,26 +1,28 @@
 package fr.ybo.services;
 
-import fr.ybo.modele.ChannelForMemCache;
-import fr.ybo.modele.ProgrammeForMemCache;
-import fr.ybo.util.GetTv;
+import com.couchbase.client.CouchbaseClient;
+import com.couchbase.client.protocol.views.ComplexKey;
+import com.couchbase.client.protocol.views.Query;
+import com.couchbase.client.protocol.views.View;
+import com.couchbase.client.protocol.views.ViewRow;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.ybo.modele.Channel;
+import fr.ybo.modele.Programme;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class ChannelService extends DataService<ChannelForMemCache> {
+public class ChannelService extends DataService<Channel> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ChannelForMemCache> getAll() throws ServiceExeption {
+    public List<Channel> getAll() throws ServiceExeption {
         try {
-            List<ChannelForMemCache> channels = GetTv.getCurrentChannels();
+            List<Channel> channels = CouchBaseService.INSTANCE.getMapper().readValue((String) CouchBaseService.INSTANCE.getClient().get("channels"),
+                    new TypeReference<List<Channel>>() {});
             Collections.sort(channels);
             return channels;
-        } catch (JAXBException jaxbException) {
-            throw new ServiceExeption(jaxbException);
         } catch (IOException ioException) {
             throw new ServiceExeption(ioException);
 
@@ -28,9 +30,9 @@ public class ChannelService extends DataService<ChannelForMemCache> {
     }
 
     @Override
-    public ChannelForMemCache getById(String id) throws ServiceExeption {
-        ChannelForMemCache channel = null;
-        for (ChannelForMemCache oneChannel : getAll()) {
+    public Channel getById(String id) throws ServiceExeption {
+        Channel channel = null;
+        for (Channel oneChannel : getAll()) {
             if (id.equals(oneChannel.getId())) {
                 channel = oneChannel;
                 break;
@@ -40,16 +42,37 @@ public class ChannelService extends DataService<ChannelForMemCache> {
     }
 
     @Override
-    public List<ChannelForMemCache> getBy(String parameterName, String parameterValue) throws ServiceExeption {
+    public List<Channel> getBy(String parameterName, String parameterValue) throws ServiceExeption {
         if ("id".equals(parameterName)) {
             return Collections.singletonList(getById(parameterValue));
         } else if ("date".equals(parameterName)) {
-            List<ChannelForMemCache> returnChannels = new ArrayList<ChannelForMemCache>();
-            List<ChannelForMemCache> channels = getAll();
-            for (ChannelForMemCache channel : channels) {
-                List<ProgrammeForMemCache> programmes = ((ProgrammeService) ServiceFactory.getService("programme")).get("channel", channel.getId(), "date", parameterValue);
-                if (!programmes.isEmpty()) {
-                    channel.setCurrentProgramme(programmes.get(0));
+            List<Channel> returnChannels = new ArrayList<Channel>();
+            Map<String, Channel> channelsById = new HashMap<String, Channel>();
+            for (Channel channel : getAll()) {
+                channelsById.put(channel.getId(), channel);
+            }
+
+            try {
+                CouchbaseClient client = CouchBaseService.INSTANCE.getClient();
+                ObjectMapper mapper = CouchBaseService.INSTANCE.getMapper();
+
+                View view = client.getView("programme", "by_date");
+                Query query = new Query();
+
+                query.setRange(ComplexKey.of("00000000000000", parameterValue),
+                        ComplexKey.of(parameterValue, "99999999999999"));
+                query.setIncludeDocs(true);
+
+                for (ViewRow row : client.query(view, query)) {
+                    Programme programme = mapper.readValue((String) row.getDocument(), Programme.class);
+                    channelsById.get(programme.getChannel()).setCurrentProgramme(programme);
+                }
+            } catch (IOException ioException) {
+                throw new ServiceExeption(ioException);
+            }
+
+            for (Channel channel : channelsById.values()) {
+                if (channel.getCurrentProgramme() != null) {
                     returnChannels.add(channel);
                 }
             }
@@ -60,7 +83,7 @@ public class ChannelService extends DataService<ChannelForMemCache> {
     }
 
     @Override
-    public List<ChannelForMemCache> get(String... parameters) throws ServiceExeption {
+    public List<Channel> get(String... parameters) throws ServiceExeption {
         return null;
     }
 
