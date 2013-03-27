@@ -35,7 +35,7 @@ public class ProgrammeService extends DataService<Programme> {
 
             View view = client.getView("programme", "by_channel");
             Query query = new Query();
-            query.setKey(channel);
+            query.setKey(ComplexKey.of(channel));
             query.setIncludeDocs(true);
 
             List<Programme> programmes = new ArrayList<Programme>();
