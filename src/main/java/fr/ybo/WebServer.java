@@ -1,6 +1,7 @@
 package fr.ybo;
 
 
+import com.google.common.base.Splitter;
 import fr.ybo.services.ChannelService;
 import fr.ybo.services.ServiceExeption;
 import fr.ybo.services.ServiceFactory;
@@ -20,6 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
+import java.util.List;
+
+import com.sun.management.OperatingSystemMXBean;
+
+import static com.google.common.collect.Lists.newArrayList;
 
 public class WebServer extends AbstractHandler {
 
@@ -48,6 +55,31 @@ public class WebServer extends AbstractHandler {
                 serviceExeption.printStackTrace(writer);
                 writer.close();
             }
+        } else if (path.startsWith("/memory")) {
+            List<String> pathInList = newArrayList(Splitter.on('/').trimResults().omitEmptyStrings().split(path));
+            OperatingSystemMXBean operatingSystemBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+            long freeMem = operatingSystemBean.getFreePhysicalMemorySize();
+            long totalMem = operatingSystemBean.getTotalPhysicalMemorySize();
+            int pourcentage = (int) ((((double)(totalMem - freeMem)) / ((double)totalMem)) * 100);
+
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            PrintWriter writer = httpServletResponse.getWriter();
+
+            if (pathInList.size() > 1) {
+                int maxPourcentage = Integer.parseInt(pathInList.get(1));
+                if (pourcentage > maxPourcentage ) {
+                    writer.print(pourcentage);
+                } else {
+                    writer.print("OK");
+                }
+            } else {
+                writer.println(pourcentage);
+                writer.println("FreeMem : " + freeMem);
+                writer.println("totalMem : " + totalMem);
+            }
+            writer.close();
+
+
         }
     }
 
