@@ -41,3 +41,11 @@ body {
     margin-right:10px;
 }
 
+.mini-logo {
+    height: 50px;
+}
+
+.with-pointer:hover {
+    cursor: pointer;
+}
+
