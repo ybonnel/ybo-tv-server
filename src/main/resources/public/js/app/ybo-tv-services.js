@@ -10,8 +10,8 @@ Services.factory('ChannelService', function($resource) {
 
 Services.factory('ProgrammeService', function($resource) {
     function ProgrammeService() {
-        this.getByDate = function(currentDate) {
-            return $resource('data/channel/date/:date').query({date:currentDate});
+        this.getByDate = function(currentDate, callback) {
+            return $resource('data/channel/date/:date').query({date:currentDate}, callback);
         };
 
         this.getByChannelAndDate = function(currentChaine, dateDebut, dateFin) {

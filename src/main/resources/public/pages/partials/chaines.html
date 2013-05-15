@@ -1,7 +1,7 @@
 <div class="row">
 <div class="media well span10 offset1 with-pointer" ng-repeat="channel in channels" ng-click="showOrHide(channel)">
     <a class="pull-left span2">
-        <img class="media-object {{{true:'mini-logo', false:''}[channel.expend !== true]}}" ng-src="logos/{{channel.icon}}" title="{{channel.displayName}}" />
+        <img class="media-object {{{true:'', false:'mini-logo'}[channel.expend]}}" ng-src="logos/{{channel.icon}}" title="{{channel.displayName}}" />
     </a>
     <div id="mediaBody{{channel.id}}" class="media-body {{{true:'span5', false:'span7'}[channel.currentProgramme.icon != undefined]}}">
         <h4 class="media-heading">{{channel.currentProgramme.title}}</h4>

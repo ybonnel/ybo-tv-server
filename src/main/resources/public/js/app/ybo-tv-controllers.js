@@ -30,7 +30,11 @@ function NowController($scope, ChannelService, ProgrammeService, $log, $location
 
     var sdf = new JsSimpleDateFormat("yyyyMMddHHmmss");
     var now = sdf.format(new Date());
-    $scope.channels = ProgrammeService.getByDate(now);
+    $scope.channels = ProgrammeService.getByDate(now, function() {
+        angular.forEach($scope.channels, function(channel) {
+            channel.expend = false;
+        });
+    });
     $scope.showOrHide = function(channel) {
         ProgrammeService.showOrHide(channel);
     };
@@ -47,7 +51,11 @@ function PrimeTimeController($scope, ChannelService, ProgrammeService, $log, $lo
 
     var sdf = new JsSimpleDateFormat("yyyyMMdd");
     var now = sdf.format(new Date()) + '210000';
-    $scope.channels = ProgrammeService.getByDate(now);
+    $scope.channels = ProgrammeService.getByDate(now, function() {
+        angular.forEach($scope.channels, function(channel) {
+            channel.expend = false;
+        });
+    });
     $scope.showOrHide = function(channel) {
         ProgrammeService.showOrHide(channel);
     };
@@ -64,7 +72,11 @@ function Partie2Controller($scope, ChannelService, ProgrammeService, $log, $loca
 
     var sdf = new JsSimpleDateFormat("yyyyMMdd");
     var now = sdf.format(new Date()) + '230000';
-    $scope.channels = ProgrammeService.getByDate(now);
+    $scope.channels = ProgrammeService.getByDate(now, function() {
+        angular.forEach($scope.channels, function(channel) {
+            channel.expend = false;
+        });
+    });
     $scope.showOrHide = function(channel) {
         ProgrammeService.showOrHide(channel);
     };
@@ -88,7 +100,11 @@ function FinSoireeController($scope, ChannelService, ProgrammeService, $log, $lo
         now = sdf.format(today) + '010000';
     }
 
-    $scope.channels = ProgrammeService.getByDate(now);
+    $scope.channels = ProgrammeService.getByDate(now, function() {
+        angular.forEach($scope.channels, function(channel) {
+            channel.expend = false;
+        });
+    });
     $scope.showOrHide = function(channel) {
         ProgrammeService.showOrHide(channel);
     };
