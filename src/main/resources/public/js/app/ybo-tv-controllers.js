@@ -31,6 +31,9 @@ function NowController($scope, ChannelService, ProgrammeService, $log, $location
     var sdf = new JsSimpleDateFormat("yyyyMMddHHmmss");
     var now = sdf.format(new Date());
     $scope.channels = ProgrammeService.getByDate(now);
+    $scope.showOrHide = function(channel) {
+        ProgrammeService.showOrHide(channel);
+    };
     $scope.activeTab('#now');
 }
 // Pour que l'injection de dépendances fonctionne en cas de 'minifying'
@@ -45,6 +48,9 @@ function PrimeTimeController($scope, ChannelService, ProgrammeService, $log, $lo
     var sdf = new JsSimpleDateFormat("yyyyMMdd");
     var now = sdf.format(new Date()) + '210000';
     $scope.channels = ProgrammeService.getByDate(now);
+    $scope.showOrHide = function(channel) {
+        ProgrammeService.showOrHide(channel);
+    };
     $scope.activeTab('#primetime');
 }
 // Pour que l'injection de dépendances fonctionne en cas de 'minifying'
@@ -59,6 +65,9 @@ function Partie2Controller($scope, ChannelService, ProgrammeService, $log, $loca
     var sdf = new JsSimpleDateFormat("yyyyMMdd");
     var now = sdf.format(new Date()) + '230000';
     $scope.channels = ProgrammeService.getByDate(now);
+    $scope.showOrHide = function(channel) {
+        ProgrammeService.showOrHide(channel);
+    };
     $scope.activeTab('#partie2');
 }
 // Pour que l'injection de dépendances fonctionne en cas de 'minifying'
@@ -80,6 +89,9 @@ function FinSoireeController($scope, ChannelService, ProgrammeService, $log, $lo
     }
 
     $scope.channels = ProgrammeService.getByDate(now);
+    $scope.showOrHide = function(channel) {
+        ProgrammeService.showOrHide(channel);
+    };
     $scope.activeTab('#finsoiree');
 }
 // Pour que l'injection de dépendances fonctionne en cas de 'minifying'

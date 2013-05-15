@@ -20,6 +20,10 @@ Services.factory('ProgrammeService', function($resource) {
                     debut:dateDebut,
                     fin:dateFin
                 });
+        };
+
+        this.showOrHide = function(channel) {
+            channel.expend = channel.expend === undefined || channel.expend === false;
         }
     }
 
