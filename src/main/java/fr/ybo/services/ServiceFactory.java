@@ -18,14 +18,15 @@ public class ServiceFactory {
     public static Object callService(DataService service, String method, String...parameters) throws ServiceExeption {
         if ("GET".equals(method)) {
             // GET : on a soit le getAll, soit le getBy
-            if (parameters.length == 0) {
-                return service.getAll();
-            } else if (parameters.length == 1) {
-                return service.getById(parameters[0]);
-            } else if (parameters.length == 2) {
-                return service.getBy(parameters[0], parameters[1]);
-            } else {
-                return service.get(parameters);
+            switch (parameters.length) {
+                case 0:
+                    return service.getAll();
+                case 1:
+                    return service.getById(parameters[0]);
+                case 2:
+                    return service.getBy(parameters[0], parameters[1]);
+                default:
+                    return service.get(parameters);
             }
         }
 

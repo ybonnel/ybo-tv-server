@@ -1,6 +1,8 @@
 package fr.ybo.modele;
 
 import com.google.common.primitives.Ints;
+import org.jongo.marshall.jackson.oid.Id;
+import org.jongo.marshall.jackson.oid.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +10,9 @@ import java.io.Serializable;
 
 public class Channel implements Serializable, Comparable<Channel> {
 
+    @Id
+    @ObjectId
+    private String key;
     private String id;
     private String displayName;
     private String icon;

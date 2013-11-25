@@ -1,80 +1,44 @@
 package fr.ybo.services;
 
-import com.couchbase.client.CouchbaseClient;
-import com.couchbase.client.protocol.views.ComplexKey;
-import com.couchbase.client.protocol.views.Query;
-import com.couchbase.client.protocol.views.View;
-import com.couchbase.client.protocol.views.ViewRow;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.ybo.modele.Channel;
 import fr.ybo.modele.Programme;
+import org.bson.types.ObjectId;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ChannelService extends DataService<Channel> {
 
     @SuppressWarnings("unchecked")
     @Override
     public List<Channel> getAll() throws ServiceExeption {
-        try {
-            List<Channel> channels = CouchBaseService.INSTANCE.getMapper().readValue((String) CouchBaseService.INSTANCE.getClient().get("channels"),
-                    new TypeReference<List<Channel>>() {});
-            Collections.sort(channels);
-            return channels;
-        } catch (IOException ioException) {
-            throw new ServiceExeption(ioException);
+        List<Channel> channels = new ArrayList<Channel>();
 
+        for (Channel channel : JongoService.INSTANCE.getCollection("channels").find().as(Channel.class)) {
+            channels.add(channel);
         }
+        Collections.sort(channels);
+        return channels;
     }
 
     @Override
-    public Channel getById(String id) throws ServiceExeption {
-        Channel channel = null;
-        for (Channel oneChannel : getAll()) {
-            if (id.equals(oneChannel.getId())) {
-                channel = oneChannel;
-                break;
-            }
-        }
-        return channel;
+    public Channel getById(String key) throws ServiceExeption {
+        return JongoService.INSTANCE.getCollection("channels").findOne(new ObjectId(key)).as(Channel.class);
     }
 
     @Override
     public List<Channel> getBy(String parameterName, String parameterValue) throws ServiceExeption {
         if ("id".equals(parameterName)) {
             return Collections.singletonList(getById(parameterValue));
-        } else if ("date".equals(parameterName)) {
+        }
+        if ("date".equals(parameterName)) {
             List<Channel> returnChannels = new ArrayList<Channel>();
-            Map<String, Channel> channelsById = new HashMap<String, Channel>();
-            for (Channel channel : getAll()) {
-                channelsById.put(channel.getId(), channel);
-            }
 
-            try {
-                CouchbaseClient client = CouchBaseService.INSTANCE.getClient();
-                ObjectMapper mapper = CouchBaseService.INSTANCE.getMapper();
-
-                View view = client.getView("programme", "by_date");
-                Query query = new Query();
-
-                query.setRange(ComplexKey.of("00000000000000", parameterValue),
-                        ComplexKey.of(parameterValue, "99999999999999"));
-                query.setIncludeDocs(true);
-
-                for (ViewRow row : client.query(view, query)) {
-                    Programme programme = mapper.readValue((String) row.getDocument(), Programme.class);
-                    channelsById.get(programme.getChannel()).setCurrentProgramme(programme);
-                }
-            } catch (IOException ioException) {
-                throw new ServiceExeption(ioException);
-            }
-
-            for (Channel channel : channelsById.values()) {
-                if (channel.getCurrentProgramme() != null) {
-                    returnChannels.add(channel);
-                }
+            for (Programme programme : JongoService.INSTANCE.getCollection("programmes").find("{start:{$lte:#},stop:{$gte:#}}", parameterValue, parameterValue).as(Programme.class)) {
+                Channel channel = JongoService.INSTANCE.getCollection("channels").findOne("{id:#}", programme.getChannel()).as(Channel.class);
+                channel.setCurrentProgramme(programme);
+                returnChannels.add(channel);
             }
             Collections.sort(returnChannels);
             return returnChannels;

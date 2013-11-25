@@ -1,5 +1,8 @@
 package fr.ybo.modele;
 
+import org.jongo.marshall.jackson.oid.Id;
+import org.jongo.marshall.jackson.oid.ObjectId;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.Map;
 
 public class Programme implements Serializable {
 
+    @Id
+    @ObjectId
     private String id;
     private String start;
     private String stop;

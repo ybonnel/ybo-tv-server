@@ -1,14 +1,11 @@
 package fr.ybo;
 
-import fr.ybo.services.CouchBaseService;
+import fr.ybo.services.JongoService;
 import org.mortbay.jetty.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
 import sun.misc.SignalHandler;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 public class StopHandler implements SignalHandler {
@@ -26,7 +23,7 @@ public class StopHandler implements SignalHandler {
         logger.info("stoping");
         try {
             server.stop();
-            CouchBaseService.INSTANCE.stopCouchbaseClient();
+            JongoService.INSTANCE.stopJongo();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(60);
