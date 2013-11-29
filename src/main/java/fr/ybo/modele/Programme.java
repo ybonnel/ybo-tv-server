@@ -32,6 +32,10 @@ public class Programme implements Serializable {
     private List<String> presenters;
 
     @JsonProperty("id")
+    public String getExternalId() {
+        return id;
+    }
+
     public String getId() {
         return id;
     }
