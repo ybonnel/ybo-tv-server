@@ -1,5 +1,6 @@
 package fr.ybo.modele;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jongo.marshall.jackson.oid.Id;
 import org.jongo.marshall.jackson.oid.ObjectId;
 
@@ -29,6 +30,15 @@ public class Programme implements Serializable {
     private List<String> actors;
     private List<String> writers;
     private List<String> presenters;
+
+    @JsonProperty("id")
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getStart() {
         return start;
@@ -152,13 +162,5 @@ public class Programme implements Serializable {
             presenters = new ArrayList<String>();
         }
         return presenters;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 }
