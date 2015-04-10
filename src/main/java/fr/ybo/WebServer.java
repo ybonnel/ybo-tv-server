@@ -39,6 +39,8 @@ public class WebServer extends AbstractHandler {
     public void handle(String s, HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, int i) throws IOException, ServletException {
         String path = httpServletRequest.getPathInfo();
 
+        httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+
         if (path.startsWith("/data/")) {
             dataServer.doGet(httpServletRequest, httpServletResponse);
         } else if (path.equals("/status")) {
