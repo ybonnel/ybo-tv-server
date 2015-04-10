@@ -1,0 +1,32 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/core-ajax/core-ajax.html">
+
+<polymer-element name="ybotv-programmes" attributes="programmes">
+    <template>
+        <style>
+            :host {
+                display: none;
+            }
+        </style>
+        <core-ajax auto
+                   id="ajax"
+                   url="http://ybo-tv.ybonnel.fr/data/channel/date/{{date}}"
+                   on-core-response="{{programmesLoaded}}"
+                   handleAs="json">
+        </core-ajax>
+
+    </template>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+    <script>
+        Polymer('ybotv-programmes', {
+            created: function() {
+                this.programmes = [];
+                this.date =  moment().format("YYYYMMDDHHmmss");
+            },
+            programmesLoaded: function() {
+                // Make a copy of the loaded data
+                this.programmes = this.$.ajax.response.slice(0);
+            }
+        });
+    </script>
+</polymer-element>
