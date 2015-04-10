@@ -40,6 +40,10 @@ public class WebServer extends AbstractHandler {
         String path = httpServletRequest.getPathInfo();
 
         httpServletResponse.addHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Origin");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "X-Requested-With");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Content-Type");
+        httpServletResponse.addHeader("Access-Control-Allow-Headers", "Accept");
 
         if (path.startsWith("/data/")) {
             dataServer.doGet(httpServletRequest, httpServletResponse);
