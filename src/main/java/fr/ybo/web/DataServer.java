@@ -13,10 +13,13 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.zip.GZIPOutputStream;
 
 public class DataServer {
 
@@ -64,9 +67,16 @@ public class DataServer {
             ObjectMapper mapper = new ObjectMapper();
             mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
             String jsonResponse = mapper.writeValueAsString(result);
-            PrintWriter writer = resp.getWriter();
-            writer.print(jsonResponse);
-            writer.close();
+            if (req.getHeader("Accept-Encoding") != null && req.getHeader("Accept-Encoding").contains("gzip")) {
+                resp.addHeader("content-encoding", "gzip");
+                try (BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(resp.getOutputStream())))) {
+                    out.write(jsonResponse);
+                }
+            } else {
+                PrintWriter writer = resp.getWriter();
+                writer.print(jsonResponse);
+                writer.close();
+            }
             resp.setStatus(200);
         } catch (ServiceExeption serviceExeption) {
             resp.setStatus(500);
