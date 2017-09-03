@@ -30,6 +30,7 @@ public class Programme implements Serializable {
     private List<String> actors;
     private List<String> writers;
     private List<String> presenters;
+    private String critique;
 
     @JsonProperty("id")
     public String getExternalId() {
@@ -138,6 +139,14 @@ public class Programme implements Serializable {
 
     public void setStarRating(String starRating) {
         this.starRating = starRating;
+    }
+
+    public String getCritique() {
+        return critique;
+    }
+
+    public void setCritique(String critique) {
+        this.critique = critique;
     }
 
     public List<String> getDirectors() {
